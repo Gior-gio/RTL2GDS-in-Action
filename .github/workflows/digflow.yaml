@@ -1,4 +1,4 @@
-name: Digital flow improved
+name: Digital flow
 
 on:
   workflow_dispatch:
@@ -128,8 +128,6 @@ jobs:
     # Step 11: Generate Yosys Synthesis using GraphViz diagram
     - name: Generate Yosys GraphViz diagram
       run: |
-        sudo apt-get install -y graphviz
-
         SYN_DIR="${{ env.last_run_dir }}/02-yosys-synthesis"
         SYN_V=$(find "$SYN_DIR" -type f -name "*.v" | head -n 1)
 
@@ -142,24 +140,22 @@ jobs:
           exit 1
         fi
 
-        mkdir -p Graphs
-
         # Run Yosys 
         yosys -p "
           read_verilog $SYN_V;
           hierarchy -auto-top;
           proc;
           opt;
-          show -format dot -prefix Graphs/yosys_graph;
+          show -format dot -prefix Imgs/yosys_graph;
         "
 
         # Convert DOT → PNG on the GitHub runner
-        if [ -f Graphs/yosys_graph.dot ]; then
-          dot -Tpng Graphs/yosys_graph.dot > Graphs/Yosys_Synthesis_Graph.png
-          echo "Graph generated: Graphs/Yosys_Synthesis_Graph.png"
+        if [ -f Imgs/yosys_graph.dot ]; then
+          dot -Tpng Imgs/yosys_graph.dot > Imgs/Yosys_Synthesis_Graph.png
+          echo "Graph generated: Imgs/Yosys_Synthesis_Graph.png"
         else
           echo "Error: DOT file missing."
-          ls -l Graphs
+          ls -l Imgs
           exit 1
         fi
 
@@ -168,7 +164,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: yosys-graphviz
-        path: Graphs/
+        path: Imgs/
 
     - name: Display previews in workflow summary
       shell: bash
@@ -178,19 +174,19 @@ jobs:
     
         cat << EOF >> $GITHUB_STEP_SUMMARY
         # Yosys Synthesis
-        ![Yosys Synthesis]($PAGE_URL/Yosys_Synthesis_Graph.png)
+        ![Yosys Synthesis]($PAGE_URL/Imgs/Yosys_Synthesis_Graph.png)
     
         # PnR
     
         ## Post Generate PDN
-        ![Post Generate PDN]($PAGE_URL/1_Post_GeneratePDN.png)
+        ![Post Generate PDN]($PAGE_URL/Imgs/1_Post_GeneratePDN.png)
     
         ## Post Detailed Placement
-        ![Post Detailed Placement]($PAGE_URL/2_Post_DetailedPlacement.png)
+        ![Post Detailed Placement]($PAGE_URL/Imgs/2_Post_DetailedPlacement.png)
     
         ## Post Detailed Routing
-        ![Post Detailed Routing]($PAGE_URL/3_Post_DetailedRouting.png)
+        ![Post Detailed Routing]($PAGE_URL/Imgs/3_Post_DetailedRouting.png)
     
         ## Final Layout
-        ![Final Layout]($PAGE_URL/4_Final_Layout.png)
+        ![Final Layout]($PAGE_URL/Imgs/4_Final_Layout.png)
         EOF

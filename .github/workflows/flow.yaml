@@ -1,4 +1,4 @@
-name: Digital flow
+name: Digital flow Old
 
 on:
   workflow_dispatch: # Trigger manually
