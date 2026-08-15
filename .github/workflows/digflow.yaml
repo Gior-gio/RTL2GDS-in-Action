@@ -188,19 +188,19 @@ jobs:
     
         cat << EOF >> $GITHUB_STEP_SUMMARY
         # Yosys Synthesis
-        ![Yosys Synthesis]($PAGE_URL/1_Yosys_Synthesis_Graph.png)
-    
+        <img src="$PAGE_URL/1_Yosys_Synthesis_Graph.png" width="800">
+
         # PnR
-    
+
         ## Post Generate PDN
-        ![Post Generate PDN]($PAGE_URL/2_Post_GeneratePDN.png)
-    
+        <img src="$PAGE_URL/2_Post_GeneratePDN.png" width="800">
+
         ## Post Detailed Placement
-        ![Post Detailed Placement]($PAGE_URL/3_Post_DetailedPlacement.png)
-    
+        <img src="$PAGE_URL/3_Post_DetailedPlacement.png" width="800">
+
         ## Post Detailed Routing
-        ![Post Detailed Routing]($PAGE_URL/4_Post_DetailedRouting.png)
-    
+        <img src="$PAGE_URL/4_Post_DetailedRouting.png" width="800">
+
         ## Final Layout
-        ![Final Layout]($PAGE_URL/Imgs/5_Final_Layout.png)
+        <img src="$PAGE_URL/5_Final_Layout.png" width="800">
         EOF
