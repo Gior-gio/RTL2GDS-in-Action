@@ -44,7 +44,7 @@ jobs:
     - name: Run LibreLane
       run: |
         cd my_project
-        python3 -m librelane --dockerized config.json
+        python3 -m librelane --dockerized --docker-no-tty config.json
 
     # Step 7: Locate GDS file
     - name: Find and save GDS file and RUN directory
