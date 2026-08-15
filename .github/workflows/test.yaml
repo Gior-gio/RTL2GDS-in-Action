@@ -35,17 +35,16 @@ jobs:
         python3 --version  # Check Python installation
         python3 -m pip --version  # Check pip installation
 
-    # Step 5: Install OpenLane
-    - name: Install OpenLane
-      run: python3 -m pip install openlane
-      # OpenLane is a complete open-source RTL-to-GDSII flow
+    # Step 5: Install LibreLane
+    - name: Install LibreLane
+      run: python3 -m pip install librelane
+      # LibreLane is a complete open-source RTL-to-GDSII flow
 
-    # Step 6: Run OpenLane
-    - name: Run OpenLane
+    # Step 6: Run LibreLane
+    - name: Run LibreLane
       run: |
-        cd my_project # Change directory to the project folder
-        python3 -m openlane --docker-no-tty --dockerized config.json
-        # Run the OpenLane flow in Docker using Custom Sequential Flow with the provided config.json
+        cd my_project
+        python3 -m librelane --dockerized config.json
 
     # Step 7: Locate GDS file
     - name: Find and save GDS file and RUN directory
@@ -127,29 +126,37 @@ jobs:
     - name: Generate Yosys GraphViz diagram
       run: |
         sudo apt-get install -y graphviz
-    
+
         SYN_DIR="${{ env.last_run_dir }}/02-yosys-synthesis"
-        SYN_V=$(find "$SYN_DIR" -name "*.v" | head -n 1)
-    
+        SYN_V=$(find "$SYN_DIR" -type f -name "*.v" | head -n 1)
+
         echo "Using synthesized netlist: $SYN_V"
-    
+
+        if [ -z "$SYN_V" ]; then
+          echo "Error: Synthesized netlist not found!"
+          echo "Contents of synthesis directory:"
+          find "$SYN_DIR" -maxdepth 2 -type f
+          exit 1
+        fi
+
         mkdir -p Graphs
-    
-        yosys -p "
-          read_verilog $SYN_V;
-          hierarchy -auto-top;
-          proc;
-          opt;
-          show -format dot -prefix Graphs/yosys_graph;
-        "
-    
-        # Convertir DOT → PNG (en host)
+
+        # Run Yosys inside the LibreLane Docker image
+        python3 -m librelane --dockerized \
+          -c "
+            read_verilog $SYN_V;
+            hierarchy -auto-top;
+            show -format dot -prefix /work/Graphs/yosys_graph;
+          "
+
+        # Convert DOT → PNG on the GitHub runner
         if [ -f Graphs/yosys_graph.dot ]; then
           dot -Tpng Graphs/yosys_graph.dot > Graphs/Yosys_Synthesis_Graph.png
-          echo 'Graph generated: Graphs/Yosys_Synthesis_Graph.png'
+          echo "Graph generated: Graphs/Yosys_Synthesis_Graph.png"
         else
-          echo 'Error: DOT file missing.'
+          echo "Error: DOT file missing."
           ls -l Graphs
+          exit 1
         fi
 
     # Step 12: Upload Synthesis Schematic generated from Graphviz
