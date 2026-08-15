@@ -35,9 +35,13 @@ jobs:
         python3 --version  # Check Python installation
         python3 -m pip --version  # Check pip installation
 
-    # Step 5: Install LibreLane
-    - name: Install LibreLane
-      run: python3 -m pip install librelane
+    # Step 5: Install Yosys and Librelane
+    - name: Install Yosys and Librelane
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y yosys graphviz
+        yosys --version
+        python3 -m pip install librelane
       # LibreLane is a complete open-source RTL-to-GDSII flow
 
     # Step 6: Run LibreLane
