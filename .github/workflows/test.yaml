@@ -1,0 +1,159 @@
+name: Digital flow improved
+
+on:
+  workflow_dispatch:
+
+jobs:
+  install-and-run:
+    runs-on: ubuntu-22.04
+
+    steps:
+    # Step 1: Checkout
+    - name: Check out repository
+      uses: actions/checkout@v4
+
+    # Step 2: Update system
+    - name: Update and upgrade system
+      run: |
+        sudo apt-get update
+        sudo apt-get upgrade -y
+
+    # Step 3: Install required system packages
+    - name: Install required packages
+      run: |
+        sudo apt install -y build-essential python3 python3-venv python3-pip python3-tk curl make git
+        # build-essential: Compilation tools
+        # python3, python3-venv, python3-pip: Python setup
+        # python3-tk: Required for graphical Python applications
+        # curl, make, git: Utilities for development
+        # docker.io: For running Docker containers
+
+    # Step 4: Verify installations
+    - name: Verify Docker and Python installations
+      run: |
+        docker --version  # Check Docker installation
+        python3 --version  # Check Python installation
+        python3 -m pip --version  # Check pip installation
+
+    # Step 5: Install OpenLane
+    - name: Install OpenLane
+      run: python3 -m pip install openlane
+      # OpenLane is a complete open-source RTL-to-GDSII flow
+
+    # Step 6: Run OpenLane
+    - name: Run OpenLane
+      run: |
+        cd my_project # Change directory to the project folder
+        python3 -m openlane --docker-no-tty --dockerized config.json
+        # Run the OpenLane flow in Docker using Custom Sequential Flow with the provided config.json
+
+    # Step 7: Locate GDS file
+    - name: Find and save GDS file and RUN directory
+      run: |
+        # Identify the latest run directory
+        LAST_RUN_DIR=$(ls -d ${{ github.workspace }}/my_project/runs/RUN_* | sort | tail -n 1)
+        echo "Last run directory: $LAST_RUN_DIR"
+
+        # Find any GDS file in the final/gds/ directory
+        GDS_FILE=$(find "$LAST_RUN_DIR/final/gds" -type f -name "*.gds" | head -n 1)
+
+        echo ">> Contents of final/gds:"
+        ls "$LAST_RUN_DIR/final/gds/"
+
+        if [ -n "$GDS_FILE" ]; then
+          #If a GDS file is found, set its path as an environment variable
+          echo "GDS file found: $GDS_FILE"
+          echo "gds_path=$GDS_FILE" >> $GITHUB_ENV
+          echo "last_run_dir=$LAST_RUN_DIR" >> $GITHUB_ENV
+        else
+          # Exit with an error if no GDS is found
+          echo "Error: No GDS file found!"
+          exit 1
+        fi
+
+    # Step 8: Collect and rename KLayout renders by step
+    - name: Collect and rename KLayout renders by step
+      run: |
+        mkdir -p Imgs
+        
+        echo "Searching and ordering all out.png renders..."
+
+        # Search files with name "out.png" and sort them.
+        mapfile -t renders < <(find "${{ github.workspace }}/my_project/runs" -type f -name "out.png" | sort)
+
+        # Save the files in a bash array called renders
+        echo "Found ${#renders[@]} renders:"
+        printf '%s\n' "${renders[@]}"
+    
+        echo "Renaming by processing step..."
+
+        if [ ${#renders[@]} -ge 1 ]; then
+          cp "${renders[0]}" Imgs/1_Post_GeneratePDN.png 
+        fi
+    
+        if [ ${#renders[@]} -ge 2 ]; then
+          cp "${renders[1]}" Imgs/2_Post_DetailedPlacement.png
+        fi
+    
+        if [ ${#renders[@]} -ge 3 ]; then
+          cp "${renders[2]}" Imgs/3_Post_DetailedRouting.png
+        fi
+    
+        if [ ${#renders[@]} -ge 4 ]; then
+          cp "${renders[3]}" Imgs/4_Final_Layout.png
+        fi
+    
+        ls -l Imgs
+
+
+    # Step 9: Upload GDS
+    - name: Upload GDS file as artifact
+      if: ${{ env.gds_path != '' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: myproject-gds
+        path: ${{ env.gds_path }}
+        if-no-files-found: warn
+
+    # Step 10: Upload all KLayout renders (Imgs/)
+    - name: Upload KLayout renders artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: klayout-renders
+        path: Imgs/
+        if-no-files-found: warn
+
+    # Step 11: Generate Yosys Synthesis using GraphViz diagram
+    - name: Generate Yosys GraphViz diagram
+      run: |
+        sudo apt-get install -y graphviz
+    
+        SYN_DIR="${{ env.last_run_dir }}/02-yosys-synthesis"
+        SYN_V=$(find "$SYN_DIR" -name "*.v" | head -n 1)
+    
+        echo "Using synthesized netlist: $SYN_V"
+    
+        mkdir -p Graphs
+    
+        python3 -m --docker-no-tty --dockerized yosys '
+          read_verilog $SYN_V;
+          hierarchy -auto-top;
+          proc; opt;
+          show -format dot -prefix /project/Graphs/yosys_graph
+        '
+    
+        # Convertir DOT → PNG (en host)
+        if [ -f Graphs/yosys_graph.dot ]; then
+          dot -Tpng Graphs/yosys_graph.dot > Graphs/Yosys_Synthesis_Graph.png
+          echo 'Graph generated: Graphs/Yosys_Synthesis_Graph.png'
+        else
+          echo 'Error: DOT file missing.'
+          ls -l Graphs
+        fi
+
+    # Step 12: Upload Synthesis Schematic generated from Graphviz
+    - name: Upload Yosys GraphViz diagram
+      uses: actions/upload-artifact@v4
+      with:
+        name: yosys-graphviz
+        path: Graphs/

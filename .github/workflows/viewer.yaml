@@ -3,7 +3,7 @@ name: 'GDS 2D-3D viewer'
 on:
   workflow_run:
     workflows:
-      - Digital flow  # Triggered when the other workflow is completed
+      - Digital flow improved # Triggered when the other workflow is completed
     types:
       - completed
 
