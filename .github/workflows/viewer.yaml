@@ -172,7 +172,7 @@ jobs:
     # Step 7: Deploy to GitHub Pages
     - name: Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@v4
+      uses: actions/deploy-pages@v5
 
     # Step 8: Display a preview link in the workflow summary
     - name: Display preview in workflow summary
