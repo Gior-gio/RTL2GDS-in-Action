@@ -40,14 +40,14 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y yosys graphviz
-        python3 -m pip install librelane
+        python3 -m pip install openlane
       # LibreLane is a complete open-source RTL-to-GDSII flow
 
     # Step 6: Run LibreLane
     - name: Run LibreLane
       run: |
         cd my_project
-        librelane config.json
+        python3 -m openlane --docker-no-tty --dockerized config.json
 
     # Step 7: Locate GDS file
     - name: Find and save GDS file and RUN directory
@@ -144,13 +144,14 @@ jobs:
 
         mkdir -p Graphs
 
-        # Run Yosys inside the LibreLane Docker image
-        python3 -m librelane --dockerized \
-          -c "
-            read_verilog $SYN_V;
-            hierarchy -auto-top;
-            show -format dot -prefix /work/Graphs/yosys_graph;
-          "
+        # Run Yosys 
+        yosys -p "
+          read_verilog $SYN_V;
+          hierarchy -auto-top;
+          proc;
+          opt;
+          show -format dot -prefix Graphs/yosys_graph;
+        "
 
         # Convert DOT → PNG on the GitHub runner
         if [ -f Graphs/yosys_graph.dot ]; then
