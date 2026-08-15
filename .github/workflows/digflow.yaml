@@ -39,16 +39,16 @@ jobs:
         python3 --version  # Check Python installation
         python3 -m pip --version  # Check pip installation
 
-    # Step 5: Install Yosys and Librelane
-    - name: Install Yosys and Librelane
+    # Step 5: Install Yosys and OpenLane
+    - name: Install Yosys and OpenLane
       run: |
         sudo apt-get update
         sudo apt-get install -y yosys graphviz
-        python3 -m pip install openlane==2.1.2
-      # LibreLane is a complete open-source RTL-to-GDSII flow
+        python3 -m pip install openlane
+      # OpenLane is a complete open-source RTL-to-GDSII flow
 
-    # Step 6: Run LibreLane
-    - name: Run LibreLane
+    # Step 6: Run OpenLane
+    - name: Run OpenLane
       run: |
         cd my_project
         python3 -m openlane --docker-no-tty --dockerized config.json

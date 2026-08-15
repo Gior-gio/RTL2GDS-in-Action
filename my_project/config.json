@@ -51,9 +51,6 @@
     "DIE_AREA": [0, 0, 51, 49],
     "VDD_NETS": ["vdd"],
     "GND_NETS": ["vss"],
-    "KLAYOUT_PROPERTIES": "dir::klayout_sky130_colors.lyp",
-    "KLAYOUT_RENDER_RESOLUTION": 800,
-    "KLAYOUT_RENDER_GRID_VISBLE": false,
-    "KLAYOUT_RENDER_BACKGROUND_COLOR": "white"
+    "KLAYOUT_PROPERTIES": "dir::klayout_sky130_colors.lyp"
   }
   
