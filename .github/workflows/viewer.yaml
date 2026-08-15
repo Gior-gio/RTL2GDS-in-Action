@@ -24,7 +24,7 @@ jobs:
     - name: Download GDS artifact
       uses: dawidd6/action-download-artifact@v7
       with:
-        workflow: flow.yaml
+        workflow: digflow.yaml
         workflow_conclusion: success  # Only runs if the previous workflow succeeded
         name: myproject-gds  # Artifact name
 
@@ -68,7 +68,7 @@ jobs:
     - name: Download GDS artifact
       uses: dawidd6/action-download-artifact@v7
       with:
-        workflow: flow.yaml
+        workflow: digflow.yaml
         workflow_conclusion: success
         name: myproject-gds
 
