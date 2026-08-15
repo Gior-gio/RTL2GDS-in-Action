@@ -18,7 +18,7 @@ jobs:
     steps:
     # Step 1: Checkout the repository
     - name: Check out repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     # Step 2: Download GDS artifact from the previous workflow
     - name: Download GDS artifact
@@ -81,7 +81,7 @@ jobs:
 
     # Step 3: Set up Python environment
     - name: Python version
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v6
       with:
         python-version: '3.10'  # Specify Python version
         cache: 'pip'
