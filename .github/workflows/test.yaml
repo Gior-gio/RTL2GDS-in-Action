@@ -44,7 +44,7 @@ jobs:
     - name: Run LibreLane
       run: |
         cd my_project
-        librelane config.json
+        librelane --dockerized config.json
 
     # Step 7: Locate GDS file
     - name: Find and save GDS file and RUN directory
