@@ -181,26 +181,21 @@ jobs:
         PAGE_URL=${{ steps.deployment.outputs.page_url }}
         PAGE_URL=$(echo "$PAGE_URL" | sed -e 's/\/$//')
 
-        echo "Location:"
-        pwd
-        ls -l 
-        echo "End of location"
-    
         cat << EOF >> $GITHUB_STEP_SUMMARY
         # Yosys Synthesis
-        <img src="$PAGE_URL/1_Yosys_Synthesis_Graph.png" width="800">
+        ![Yosys Synthesis]($PAGE_URL/1_Yosys_Synthesis_Graph.png)
 
         # PnR
 
         ## Post Generate PDN
-        <img src="$PAGE_URL/2_Post_GeneratePDN.png" width="800">
+        ![Post Generate PDN]($PAGE_URL/2_Post_GeneratePDN.png)
 
         ## Post Detailed Placement
-        <img src="$PAGE_URL/3_Post_DetailedPlacement.png" width="800">
+        ![Post Detailed Placement]($PAGE_URL/3_Post_DetailedPlacement.png)
 
         ## Post Detailed Routing
-        <img src="$PAGE_URL/4_Post_DetailedRouting.png" width="800">
+        ![Post Detailed Routing]($PAGE_URL/4_Post_DetailedRouting.png)
 
         ## Final Layout
-        <img src="$PAGE_URL/5_Final_Layout.png" width="800">
+        ![Final Layout]($PAGE_URL/5_Final_Layout.png)
         EOF
