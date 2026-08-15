@@ -80,6 +80,7 @@ jobs:
     # Step 8: Collect and rename KLayout renders by step
     - name: Collect and rename KLayout renders by step
       run: |
+        pwd
         mkdir -p Imgs
         
         echo "Searching and ordering all out.png renders..."
@@ -179,6 +180,11 @@ jobs:
       run: |
         PAGE_URL=${{ steps.deployment.outputs.page_url }}
         PAGE_URL=$(echo "$PAGE_URL" | sed -e 's/\/$//')
+
+        echo "Location:"
+        pwd
+        ls -l 
+        echo "End of location"
     
         cat << EOF >> $GITHUB_STEP_SUMMARY
         # Yosys Synthesis
