@@ -50,6 +50,7 @@
     "FP_SIZING": "absolute",
     "DIE_AREA": [0, 0, 51, 49],
     "VDD_NETS": ["vdd"],
-    "GND_NETS": ["vss"]
+    "GND_NETS": ["vss"],
+    "KLAYOUT_PROPERTIES": "dir::klayout_sky130_colors.lyp"
   }
   
