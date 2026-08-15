@@ -181,6 +181,11 @@ jobs:
         PAGE_URL=${{ steps.deployment.outputs.page_url }}
         PAGE_URL=$(echo "$PAGE_URL" | sed -e 's/\/$//')
 
+        echo "Pruebas"
+        pwd
+        ls -ltr
+        ls $PAGE_URL -ltr
+
         cat << EOF >> $GITHUB_STEP_SUMMARY
         # Yosys Synthesis
         ![Yosys Synthesis]($PAGE_URL/1_Yosys_Synthesis_Graph.png)
