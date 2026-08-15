@@ -135,12 +135,13 @@ jobs:
     
         mkdir -p Graphs
     
-        python3 -m --docker-no-tty --dockerized yosys '
+        yosys -p "
           read_verilog $SYN_V;
           hierarchy -auto-top;
-          proc; opt;
-          show -format dot -prefix /project/Graphs/yosys_graph
-        '
+          proc;
+          opt;
+          show -format dot -prefix Graphs/yosys_graph;
+        "
     
         # Convertir DOT → PNG (en host)
         if [ -f Graphs/yosys_graph.dot ]; then
