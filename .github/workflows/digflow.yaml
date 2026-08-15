@@ -44,7 +44,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y yosys graphviz
-        python3 -m pip install openlane
+        python3 -m pip install openlane==2.1.2
       # LibreLane is a complete open-source RTL-to-GDSII flow
 
     # Step 6: Run LibreLane
