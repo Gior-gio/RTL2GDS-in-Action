@@ -200,19 +200,19 @@ jobs:
         # Digital Flow Outputs
 
         ### Yosys Synthesis
-        <img src="$PAGE_URL/Imgs/1_Yosys_Synthesis_Graph.png" width="800">
+        <img src="$PAGE_URL/Imgs/1_Yosys_Synthesis_Graph.png" width="600">
 
         ## PnR
 
         ### Post Generate PDN
-        ![Post Generate PDN]($PAGE_URL/Imgs/2_Post_GeneratePDN.png)
+        <img src="$PAGE_URL/Imgs/2_Post_GeneratePDN.png" width="600">
 
         ### Post Detailed Placement
-        ![Post Detailed Placement]($PAGE_URL/Imgs/3_Post_DetailedPlacement.png)
+        <img src="$PAGE_URL/Imgs/3_Post_DetailedPlacement.png" width="600">
 
         ### Post Detailed Routing
-        ![Post Detailed Routing]($PAGE_URL/Imgs/4_Post_DetailedRouting.png)
+        <img src="$PAGE_URL/Imgs/4_Post_DetailedRouting.png" width="600">
 
         ### Final Layout
-        ![Final Layout]($PAGE_URL/Imgs/5_Final_Layout.png)
+        <img src="$PAGE_URL/Imgs/5_Final_Layout.png" width="600">
         EOF
