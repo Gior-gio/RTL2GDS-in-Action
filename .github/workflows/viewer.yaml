@@ -187,6 +187,9 @@ jobs:
     - name: Display preview in workflow summary
       shell: bash
       run: |
+        PAGE_URL=${{ steps.deployment.outputs.page_url }}
+        PAGE_URL=$(echo "$PAGE_URL" | sed -e 's/\/$//')
+
         cat << EOF >> $GITHUB_STEP_SUMMARY
         # 3D Viewer
         [open 3D viewer](https://gds-viewer.tinytapeout.com/?model=$PAGE_URL/render.gds.gltf)
