@@ -174,12 +174,26 @@ jobs:
     #  id: deployment
     #  uses: actions/deploy-pages@v5
 
+    # Recover GitHub Pages URL from the first workflow
+    - name: Download GitHub Pages URL
+      uses: dawidd6/action-download-artifact@v7
+      with:
+        workflow: digflow.yaml
+        workflow_conclusion: success
+        name: github-pages-url
+        path: './'
+
+    - name: Read GitHub Pages URL
+      shell: bash
+      run: |
+        PAGE_URL=$(cat page_url.txt)
+        echo "PAGE_URL=$PAGE_URL" >> $GITHUB_ENV
+        echo "Recovered GitHub Pages URL: $PAGE_URL"
+
     # Step 8: Display a preview link in the workflow summary
     - name: Display preview in workflow summary
       shell: bash
       run: |
-        PAGE_URL=${{ steps.deployment.outputs.page_url }}
-        PAGE_URL=$(echo "$PAGE_URL" | sed -e 's/\/$//')
         cat << EOF >> $GITHUB_STEP_SUMMARY
         # 3D Viewer
         [open 3D viewer](https://gds-viewer.tinytapeout.com/?model=$PAGE_URL/render.gds.gltf)

@@ -199,3 +199,18 @@ jobs:
         ## Final Layout
         ![Final Layout]($PAGE_URL/5_Final_Layout.png)
         EOF
+    
+    # Step 14: Save GitHub Pages URL for the next workflow
+    - name: Save GitHub Pages URL
+      shell: bash
+      run: |
+        echo "${{ steps.deployment.outputs.page_url }}" > page_url.txt
+        echo "GitHub Pages URL:"
+        cat page_url.txt
+
+    # Step 15: Upload GitHub Pages URL
+    - name: Upload GitHub Pages URL
+      uses: actions/upload-artifact@v4
+      with:
+        name: github-pages-url
+        path: page_url.txt
