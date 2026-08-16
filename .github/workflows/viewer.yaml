@@ -200,7 +200,7 @@ jobs:
         # Digital Flow Outputs
 
         ### Yosys Synthesis
-        ![Yosys Synthesis]($PAGE_URL/Imgs/1_Yosys_Synthesis_Graph.png)
+        <img src="$PAGE_URL/Imgs/1_Yosys_Synthesis_Graph.png" width="800">
 
         ## PnR
 
