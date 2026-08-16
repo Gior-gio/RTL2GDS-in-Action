@@ -168,6 +168,14 @@ jobs:
       uses: actions/upload-pages-artifact@v3
       with:
         path: 'gh-pages'
+
+    - name: Download Digital flow images
+      uses: dawidd6/action-download-artifact@v7
+      with:
+        workflow: digflow.yaml
+        workflow_conclusion: success
+        name: output-renders
+        path: './gh-pages/Imgs'
     
     # Step 7: Deploy to GitHub Pages
     - name: Deploy to GitHub Pages
